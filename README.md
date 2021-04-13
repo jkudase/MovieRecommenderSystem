@@ -1,12 +1,12 @@
 # MovieRecommenderSystem
 
-Before following the below instructions to run the movie recommendation application, please install the following dependent libraries:
-flask
-flask_fontawesome
-pandas
-tensorflow
-keras
-gensim(3.8)
+Before following the below instructions to run the movie recommendation application, please install the following dependent libraries:\
+flask\
+flask_fontawesome\
+pandas\
+tensorflow\
+keras\
+gensim(3.8)\
 numpy(1.19.5)
 
 In order to run this application, navigate to the Folder CODE->DEMO->flask_movie. Run the main.py using the following command:
