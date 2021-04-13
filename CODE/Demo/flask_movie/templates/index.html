@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+{{ fontawesome_html() }}
+<title>Movie Recommendation System</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<script src="{{url_for('static', filename='javascript/jquery/jquery-3.3.1.min.js')}}"></script>
+<script>
+
+$(function(){
+var lastCard = $("#card-list .card").length - 1;
+
+$('.next').click(function(){ 
+	var prependList = function() {
+		if( $('.card').hasClass('activeNow') ) {
+			var $slicedCard = $('.card').slice(lastCard).removeClass('transformThis activeNow');
+			$('#card-list').prepend($slicedCard);
+		}
+	}
+	$('.card').last().removeClass('transformPrev').addClass('transformThis').prev().addClass('activeNow');
+	setTimeout(function(){prependList(); }, 150);
+});
+
+$('.prev').click(function() {
+	var appendToList = function() {
+		if( $('.card').hasClass('activeNow') ) {
+			var $slicedCard = $('.card').slice(0, 1).addClass('transformPrev');
+			$('#card-list').append($slicedCard);
+		}
+	}
+	$('.card').removeClass('transformPrev').last().addClass('activeNow').prevAll().removeClass('activeNow');
+	setTimeout(function(){appendToList();}, 150);
+});
+
+var lastCardMF = $("#card-list-MF .cardMF").length - 1;
+
+$('.nextMF').click(function(){ 
+	var prependListMF = function() {
+		if( $('.cardMF').hasClass('activeNow') ) {
+			
+			var $slicedCard = $('.cardMF').slice(lastCardMF).removeClass('transformThis activeNow');
+			$('#card-list-MF').prepend($slicedCard);
+		}
+	}
+	$('.cardMF').last().removeClass('transformPrev').addClass('transformThis').prev().addClass('activeNow');
+	setTimeout(function(){prependListMF(); }, 150);
+});
+
+$('.prevMF').click(function() {
+	var appendToListMF = function() {
+		if( $('.cardMF').hasClass('activeNow') ) {
+			var $slicedCard = $('.cardMF').slice(0, 1).addClass('transformPrev');
+			$('#card-list-MF').append($slicedCard);
+		}
+	}
+	$('.cardMF').removeClass('transformPrev').last().addClass('activeNow').prevAll().removeClass('activeNow');
+	setTimeout(function(){appendToListMF();}, 150);
+});
+
+var lastCardMF1 = $("#card-list-MF1 .cardMF1").length - 1;
+
+$('.nextMF1').click(function(){
+	var prependListMF1 = function() {
+		if( $('.cardMF1').hasClass('activeNow') ) {
+
+			var $slicedCard = $('.cardMF1').slice(lastCardMF1).removeClass('transformThis activeNow');
+			$('#card-list-MF1').prepend($slicedCard);
+		}
+	}
+	$('.cardMF1').last().removeClass('transformPrev').addClass('transformThis').prev().addClass('activeNow');
+	setTimeout(function(){prependListMF1(); }, 150);
+});
+
+$('.prevMF1').click(function() {
+	var appendToListMF1 = function() {
+		if( $('.cardMF1').hasClass('activeNow') ) {
+			var $slicedCard = $('.cardMF1').slice(0, 1).addClass('transformPrev');
+			$('#card-list-MF1').append($slicedCard);
+		}
+	}
+	$('.cardMF1').removeClass('transformPrev').last().addClass('activeNow').prevAll().removeClass('activeNow');
+	setTimeout(function(){appendToListMF1();}, 150);
+});
+
+    var loadingLSTM = false;
+    var loadingMF= false;
+    var loadingMF1 = false;
+
+	$("#getRecommedation").click(function(e) {
+    	$(".card").remove();
+        $(".cardMF").remove();
+		$(".cardMF1").remove();
+    	var user = $("#userID").val();
+    	$.ajax({
+        type: "GET",
+        url: "/recommendationsLSTM?userID="+user,
+        cache       : false,
+        contentType : false,
+        processData : false,
+        beforeSend: function () {
+        		$("#loader").show();
+        		$("#LSTM").hide();
+            },
+       	complete: function () {
+                loadingLSTM = true;
+       			if (loadingLSTM && loadingMF && loadingMF1) {
+        		    $("#loader").hide();
+        		    loadingLSTM = false;
+        		    loadingMF = false;
+        		    loadingMF1 = false;
+                }
+       			$("#LSTM").show();
+            },
+        success: function(data) {
+            	var i = 0;
+            	$.each(data, function(key, value) {
+            		var color;
+            		if(i==0){
+  						color="#4CD964;";
+  					}else if(i==1){
+  						color="#FFCC00;";
+  					}
+  					else if(i==2){
+  						color="#FF3B30;";
+  					}
+					else if(i==3){
+  						color="#34AADC;";
+  					}
+  					else{
+  						color="#FF9500;";
+  					}
+  					$('#card-list').append('<li class="card" style="background-color: '+color+'"><span class="movieName">'+value+'</span></li>');
+  					i=i+1;
+				});
+            }
+        });
+
+        $.ajax({
+        type: "GET",
+        url: "/recommendationsMF?userID="+user,
+        cache       : false,
+        contentType : false,
+        processData : false,
+        beforeSend: function () {
+        		$("#loader").show();
+        		$("#MF").hide();
+            },
+       	complete: function () {
+                loadingMF = true;
+       			if (loadingLSTM && loadingMF && loadingMF1) {
+        		    $("#loader").hide();
+        		    loadingLSTM = false;
+        		    loadingMF = false;
+        		    loadingMF1 = false;
+                }
+       			$("#MF").show();
+            },
+        success: function(data) {
+            	var i = 0;
+            	$.each(data, function(key, value) {
+            		var color;
+            		if(i==0){
+  						color="#4CD964;";
+  					}else if(i==1){
+  						color="#FFCC00;";
+  					}
+  					else if(i==2){
+  						color="#FF3B30;";
+  					}
+					else if(i==3){
+  						color="#34AADC;";
+  					}
+  					else{
+  						color="#FF9500;";
+  					}
+  					$('#card-list-MF').append('<li class="cardMF" style="background-color: '+color+'"><span class="movieName">'+value+'</span></li>');
+  					i=i+1;
+				});
+            }
+        });
+
+        $.ajax({
+        type: "GET",
+        url: "/recommendationsCosine?userID="+user,
+        cache       : false,
+        contentType : false,
+        processData : false,
+        beforeSend: function () {
+        		$("#loader").show();
+        		$("#MF1").hide();
+            },
+       	complete: function () {
+                loadingMF1 = true;
+       			if (loadingLSTM && loadingMF && loadingMF1) {
+        		    $("#loader").hide();
+        		    loadingLSTM = false;
+        		    loadingMF = false;
+        		    loadingMF1 = false;
+                }
+       			$("#MF1").show();
+            },
+        success: function(data) {
+            	var i = 0;
+            	$.each(data, function(key, value) {
+            		var color;
+            		if(i==0){
+  						color="#4CD964;";
+  					}else if(i==1){
+  						color="#FFCC00;";
+  					}
+  					else if(i==2){
+  						color="#FF3B30;";
+  					}
+					else if(i==3){
+  						color="#34AADC;";
+  					}
+  					else{
+  						color="#FF9500;";
+  					}
+  					$('#card-list-MF1').append('<li class="cardMF1" style="background-color: '+color+'"><span class="movieName">'+value+'</span></li>');
+  					i=i+1;
+				});
+            }
+        });
+	});
+});
+</script>
+</head>
+<body>
+	<div id="wrapper">
+		<h1 style = "font-family:courier,arial,helvetica;text-align:center;">Movie Recommendation System</h1>
+		<h3 style = "font-family:courier,arial,helvetica;text-align:center;">
+			Group 19
+		</h3>
+		<hr style='width: 100%'>
+		<div id="inputBlock">
+			<div style="padding-top: 20px; display: inline-flex;">
+				<span style="margin-top: 3px;font-family:courier,arial,helvetica;font-weight:bold"">User ID:&nbsp;</span> <input
+					style="width: 60px;height: 30px;" id='userID' type='text'/>
+					&nbsp; &nbsp;<button id="getRecommedation" type="submit"
+                        class="btn" style="width: 50%;font-family:courier,arial,helvetica;">Get Recommendations</button>
+			</div>
+		</div>
+		<div class="container">
+			
+			<div id="loader" style="font-size: 30px; text-align: center; display: none;">
+                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            </div>
+			
+			<div id="card-stack-MF1" style="left: 10%; width:400px;">
+				<h1 id="MF1" style="display:none; bottom: 88%; position: absolute; left: 20%;">Cosine Relation</h1>
+				<a class="buttons prevMF1" href="#"><</a>
+				<ul id="card-list-MF1">
+				</ul>
+				<a class="buttons nextMF1" href="#">></a>
+			</div>
+			
+			
+			<div id="card-stack-MF" style="left: 40%; width:400px;">
+				<h1 id="MF" style="display:none; bottom: 88%; position: absolute; left: 15%;">Matrix Factorization</h1>
+				<a class="buttons prevMF" href="#"><</a>
+				<ul id="card-list-MF">
+				</ul>
+				<a class="buttons nextMF" href="#">></a>
+			</div>
+			
+			<div id="card-stack" style="left: 70%;width:400px;">
+				<h1 id="LSTM" style="display:none; bottom: 88%; position: absolute; left: 40%;">LSTM</h1>
+				<a class="buttons prev" href="#"><</a>
+				<ul id="card-list">
+				</ul>
+				<a class="buttons next" href="#">></a>
+			</div>
+			
+		</div>
+	</div>
+	
+</body>
+</html>
